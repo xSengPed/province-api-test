@@ -39,16 +39,6 @@ A high-performance REST API for Thai geographic data (Provinces, Districts, Sub-
   - Query params: `district_id`, `zip_code`, `search`, `page`, `limit`
 - `GET /api/v1/subdistricts/{id}` - Get sub-district by ID
 
-## API Documentation (Swagger)
-
-Interactive API documentation is available via Swagger UI. After starting the server (or when deployed), open:
-
-```
-http://localhost:3000/docs
-```
-
-This serves a browsable OpenAPI specification (`/docs/openapi.json`) and provides example requests/responses for the available endpoints.
-
 ## Query Parameters
 
 - `search` - Search by Thai or English name
