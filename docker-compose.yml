@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  thai-location-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: thai-location-api:latest
+    container_name: thai-location-api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - GIN_MODE=release
+    networks:
+      - thai-location-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.thai-location-api.rule=Host(`thai-location-api.local`)"
+      - "traefik.http.routers.thai-location-api.entrypoints=web"
+      - "traefik.http.services.thai-location-api.loadbalancer.server.port=3000"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+networks:
+  thai-location-network:
+    driver: bridge
+
+# For production with reverse proxy
+# version: '3.8'
+# 
+# services:
+#   thai-location-api:
+#     image: thai-location-api:latest
+#     container_name: thai-location-api
+#     restart: unless-stopped
+#     ports:
+#       - "3000:3000"
+#     environment:
+#       - PORT=3000
+#     networks:
+#       - proxy
+#     labels:
+#       - "traefik.enable=true"
+#       - "traefik.http.routers.thai-location-api.rule=Host(`api.yourdomain.com`)"
+#       - "traefik.http.routers.thai-location-api.entrypoints=websecure"
+#       - "traefik.http.routers.thai-location-api.tls.certresolver=letsencrypt"
+#       - "traefik.http.services.thai-location-api.loadbalancer.server.port=3000"
+# 
+# networks:
+#   proxy:
+#     external: true
